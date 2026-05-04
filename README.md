@@ -111,6 +111,6 @@ Licensed under the Apache License, Version 2.0
 ---
 
 <div align="center">
-  <strong>Built with ❤️& ☕ by Trung Kien</strong>
+  <strong></strong>
 </div>
 # loci_chat_videocall
