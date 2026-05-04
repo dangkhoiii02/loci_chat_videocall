@@ -1,0 +1,71 @@
+pipeline {
+    // agent { lobel "java17" } // Docker agent
+    agent  {
+      docker {
+        image "maven:3.9.9-eclipse-temurin-17"
+        args '-v /root/.m2:/root/.m2 '
+      }
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    url: 'https://gitlab.com/loci-project/loci',
+                    credentialsId: 'gitlab-loci'  // gitlab-token
+            }
+        }
+
+        stage('Compile') {
+            steps {
+                dir("loci-backend"){
+                  sh 'mvn clean compile'
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                dir("loci-backend"){
+                  sh 'mvn test'
+                }
+            }
+            post {
+                always {
+                    junit '**/target/surefire-reports/*.xml'
+                }
+            }
+        }
+
+        stage('Package') {
+            steps {
+                dir("loci-backend"){
+                  sh 'mvn package -DskipTests'
+                  archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+                }
+            }
+        }
+    }
+
+  // stage('Docker build & push') {
+  //   steps {
+  //     script {
+  //       def shortCommit = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
+  //       def image = "your-dockerhub/loci-backend:${shortCommit}"
+  //       docker.withRegistry('https://registry.hub.docker.com', 'docker-registry-credentials') {
+  //         def app = docker.build("${image}", "./backend")
+  //         app.push()
+  //         app.push("latest")
+  //       }
+  //     }
+  //   }
+  // }
+
+    // post {
+    //     success {
+    //         updateGitlabCommitStatus name: 'jenkins-build', state: 'success'
+    //     }
+    //     failure {
+    //         updateGitlabCommitStatus name: 'jenkins-build', state: 'failed'
+    //     }
+    // }
+}

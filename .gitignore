@@ -1,0 +1,6 @@
+postgres-data/
+postgres-data/**
+*.log
+.idea/
+.idea
+loci-backend/.env
