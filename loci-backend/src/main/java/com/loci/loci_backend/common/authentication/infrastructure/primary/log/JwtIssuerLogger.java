@@ -31,7 +31,7 @@ import lombok.extern.log4j.Log4j2;
 @RequiredArgsConstructor
 public class JwtIssuerLogger {
 
-  @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
+  @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri:#{null}}")
   private String issuerUri;
 
 

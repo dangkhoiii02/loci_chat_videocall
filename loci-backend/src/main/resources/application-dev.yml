@@ -3,8 +3,9 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${KEYCLOAK_ISSUER_URI_HOST:http://localhost:9090}/realms/${KEYCLOAK_REALM:loci-realm}
-          jwk-set-uri: ${KEYCLOAK_JWK_SET_URI_HOST:http://localhost:9090}/realms/${KEYCLOAK_REALM:loci-realm}/protocol/openid-connect/certs
+          # Only validate signature via JWK — allows tokens from both localhost:9093
+          # and 10.0.2.2:9093 (Android emulator) to be accepted.
+          jwk-set-uri: ${KEYCLOAK_JWK_SET_URI_HOST:http://localhost:9093}/realms/${KEYCLOAK_REALM:loci-realm}/protocol/openid-connect/certs
   flyway:
     enabled: true
     locations: classpath:db/migrations
@@ -158,8 +159,8 @@ logging:
   # level:
   #   org.springframework.security.web.FilterChainProxy: TRACE
 keycloak:
-  auth-server-url: ${KEYCLOAK_ISSUER_URI_HOST:http://localhost:9090}
-  internal-server-url: ${KEYCLOAK_JWK_SET_URI_HOST:http://localhost:9090}
+  auth-server-url: ${KEYCLOAK_ISSUER_URI_HOST:http://localhost:9093}
+  internal-server-url: ${KEYCLOAK_JWK_SET_URI_HOST:http://localhost:9093}
   resource: ${KEYCLOAK_RESOURCE:spring}
   public-client: false
   migration-password: ${KEYCLOAK_MIGRATION_PASSWORD:exampleloci123}
